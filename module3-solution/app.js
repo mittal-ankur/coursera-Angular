@@ -32,7 +32,8 @@
       templateUrl: 'foundItems.html',
       scope: {
         items: '<',
-        onRemove: '&'
+        onRemove: '&',
+        isValid: '<'
       },
       controller: FoundItemsDirectiveController,
       controllerAs: 'foundCtrl',
@@ -44,7 +45,11 @@
   function FoundItemsDirectiveController() {
     var foundCtrl = this;
     foundCtrl.isNothingFound = function() {
-      return (foundCtrl.items.length === 0 ? true:false);
+      if (typeof foundCtrl.items == 'undefined')
+        return (foundCtrl.items.length === 0 ? true:false);
+      else {
+        return true;
+      }
     };
   }
 
@@ -64,9 +69,11 @@
       }).then(function(result) {
         var allItems = result.data.menu_items;
         allItems.filter( function (item) {
+          if(searchTerm){
             if(item.description.toLowerCase().includes(searchTerm.toLowerCase())){
               foundItems.push(item);
             }
+          }
         });
         return foundItems;
       });
