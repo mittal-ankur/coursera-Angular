@@ -1,26 +1,28 @@
-(function () {
-  'use strict'
+(function() {
+  "use strict";
 
-  angular.module('NarrowItDownApp', [])
-  .controller('NarrowItDownController', NarrowItDownController)
-  .service('MenuSearchService', MenuSearchService)
-  .constant('ApiBasePath', "https://davids-restaurant.herokuapp.com")
-  .directive('foundItems', FoundItemsDirective);
+  angular
+    .module("NarrowItDownApp", [])
+    .controller("NarrowItDownController", NarrowItDownController)
+    .service("MenuSearchService", MenuSearchService)
+    .constant("ApiBasePath", "https://davids-restaurant.herokuapp.com")
+    .directive("foundItems", FoundItemsDirective);
 
-  NarrowItDownController.$inject = ['MenuSearchService'];
+  NarrowItDownController.$inject = ["MenuSearchService"];
   function NarrowItDownController(MenuSearchService) {
     var narrowCtrl = this;
     narrowCtrl.found = MenuSearchService.getItems();
-    narrowCtrl.searchMenuItems = function () {
+    narrowCtrl.searchMenuItems = function() {
       if (narrowCtrl.searchTerm === "") {
         MenuSearchService.clear();
       } else {
-        MenuSearchService.getMatchedMenuItems(narrowCtrl.searchTerm)
-        .then(function(result) {
-          narrowCtrl.found = result;
-        });
+        MenuSearchService.getMatchedMenuItems(narrowCtrl.searchTerm).then(
+          function(result) {
+            narrowCtrl.found = result;
+          }
+        );
       }
-    }
+    };
 
     narrowCtrl.removeItem = function(itemIndex) {
       MenuSearchService.removeItem(itemIndex);
@@ -29,14 +31,14 @@
 
   function FoundItemsDirective() {
     var ddo = {
-      templateUrl: 'foundItems.html',
+      templateUrl: "foundItems.html",
       scope: {
-        items: '<',
-        onRemove: '&',
-        isValid: '<'
+        items: "<",
+        onRemove: "&",
+        isValid: "<"
       },
       controller: FoundItemsDirectiveController,
-      controllerAs: 'foundCtrl',
+      controllerAs: "foundCtrl",
       bindToController: true
     };
     return ddo;
@@ -45,15 +47,14 @@
   function FoundItemsDirectiveController() {
     var foundCtrl = this;
     foundCtrl.isNothingFound = function() {
-      if (typeof foundCtrl.items == 'undefined')
-        return (foundCtrl.items.length === 0 ? true:false);
+      if (typeof foundCtrl.items == "undefined") return true;
       else {
-        return true;
+        return foundCtrl.items.length === 0 ? true : false;
       }
     };
   }
 
-  MenuSearchService.$inject = ['$http', 'ApiBasePath'];
+  MenuSearchService.$inject = ["$http", "ApiBasePath"];
   function MenuSearchService($http, ApiBasePath) {
     var service = this;
     var foundItems = [];
@@ -65,12 +66,14 @@
       }
       return $http({
         method: "GET",
-        url: (ApiBasePath + "/menu_items.json")
+        url: ApiBasePath + "/menu_items.json"
       }).then(function(result) {
         var allItems = result.data.menu_items;
-        allItems.filter( function (item) {
-          if(searchTerm){
-            if(item.description.toLowerCase().includes(searchTerm.toLowerCase())){
+        allItems.filter(function(item) {
+          if (searchTerm) {
+            if (
+              item.description.toLowerCase().includes(searchTerm.toLowerCase())
+            ) {
               foundItems.push(item);
             }
           }
@@ -85,7 +88,7 @@
 
     service.clear = function() {
       foundItems.splice(0, foundItems.length);
-    }
+    };
 
     service.removeItem = function(itemIndex) {
       foundItems.splice(itemIndex, 1);
