@@ -2,7 +2,8 @@
   <h2 class="text-center">My info</h2>
 
   <div ng-hide="myInfoCtrl.myInfo" ng-cloak class="alert alert-info">
-    Not Signed Up Yet. <a ui-sref="public.sign-up">Sign up Now!</a>
+    Not Signed Up Yet.
+    <p><a ui-sref="public.sign-up" class="btn btn-warning">Sign up Now!</a></p>
   </div>
 
   <div ng-show="myInfoCtrl.myInfo" ng-cloak>
