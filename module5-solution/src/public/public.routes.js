@@ -47,13 +47,13 @@
           ]
         }
       })
-      .state("public.signUp", {
+      .state("public.sign-up", {
         url: "/sign-up",
         templateUrl: "src/public/sign-up/sign-up.html",
         controller: "SignUpController",
         controllerAs: "signUpCtrl"
       })
-      .state("public.myInfo", {
+      .state("public.my-info", {
         url: "/my-info",
         templateUrl: "src/public/my-info/my-info.html",
         controller: "MyInfoController",
