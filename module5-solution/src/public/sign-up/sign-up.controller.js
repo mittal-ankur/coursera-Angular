@@ -1,42 +1,25 @@
-(function () {
+(function() {
   "use strict";
 
-  angular.module('public')
-    .controller('SignUpController', SignUpController);
+  angular.module("public").controller("SignUpController", SignUpController);
 
-  SignUpController.$inject = ['UsersService', 'MenuService'];
-  function SignUpController(UsersService, MenuService) {
-    var $ctrl = this;
-    $ctrl.registrationSuccess = false;
-    $ctrl.favoriteDishFound = false;
-    $ctrl.testValue = 42; //Displayed as a debug tool to show that controller working
+  SignUpController.$inject = ["SignUpStorage"];
+  function SignUpController(SignUpStorage) {
+    var signUpCtrl = this;
 
-    $ctrl.signUp = function(event) {
-      console.log("Sign up started... ");
-      event.preventDefault();
-      var user = {
-            firstName: $ctrl.firstName,
-            lastName: $ctrl.lastName,
-            email: $ctrl.email,
-            phone: $ctrl.phone,
-            favoriteDish: $ctrl.favoriteDish
-      };
+    signUpCtrl.signUpData = SignUpStorage.get();
 
-      MenuService.getMenuItem($ctrl.favoriteDish)
-        .then(function(data) {
-          console.log("Dish found:", data);
-          user.favoriteMenuItem = data;
+    signUpCtrl.signUp = function(form) {
+      if (form.$valid) {
+        SignUpStorage.save(signUpCtrl.signUpData);
+        signUpCtrl.saved = true;
+      }
+    };
 
-          //Set user (using service) - this should be "adding" instead of setting in "real world"
-          UsersService.setUser(user);
-          $ctrl.favoriteDishFound = true;
-          $ctrl.registrationSuccess = true;
-        }, function(err) {
-          console.log("Dish not found...");
-          UsersService.setUser(user);
-          $ctrl.favoriteDishFound = false;
-          $ctrl.registrationSuccess = true;
-        });
+    signUpCtrl.clearSignUp = function() {
+      SignUpStorage.clear();
+      signUpCtrl.signUpData = null;
+      signUpCtrl.saved = false;
     };
   }
 })();
